@@ -1,0 +1,503 @@
+@prefix : <http://www.uag.mx/ontologias/geografia_mexico#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo: <http://www.uag.mx/ontologias/geografia_mexico#> .
+
+# ============================================================
+# ONTOLOGIA DE GEOGRAFIA DE MEXICO
+# Universidad de Arizona Global Campus
+# Curso: Razonamiento y Representacion del Conocimiento
+# Unidad 4: Ontologias y Web Semantica
+# ============================================================
+
+<http://www.uag.mx/ontologias/geografia_mexico> rdf:type owl:Ontology ;
+    rdfs:label "Ontologia de Geografia de Mexico"@es ;
+    rdfs:comment "Ontologia que modela la estructura geografica de Mexico, incluyendo paises, estados, ciudades, capitales y fronteras."@es ;
+    owl:versionInfo "1.0" .
+
+# ============================================================
+# CLASES PRINCIPALES
+# ============================================================
+
+:EntidadGeografica rdf:type owl:Class ;
+    rdfs:label "Entidad Geografica"@es ;
+    rdfs:comment "Clase abstracta que representa cualquier entidad con ubicacion geografica definida."@es .
+
+:Pais rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:label "Pais"@es ;
+    rdfs:comment "Territorio soberano con gobierno propio, fronteras definidas y reconocimiento internacional."@es .
+
+:Estado rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :perteneceA ;
+        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+        owl:onClass :Pais
+    ] ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :contiene ;
+        owl:someValuesFrom :Ciudad
+    ] ;
+    rdfs:label "Estado"@es ;
+    rdfs:comment "Entidad federativa que forma parte de un pais federal."@es .
+
+:Ciudad rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:label "Ciudad"@es ;
+    rdfs:comment "Asentamiento urbano con poblacion significativa."@es .
+
+:CapitalEstatal rdf:type owl:Class ;
+    rdfs:subClassOf :Ciudad ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :esCapitalDe ;
+        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+        owl:onClass :Estado
+    ] ;
+    rdfs:label "Capital Estatal"@es ;
+    rdfs:comment "Ciudad sede del gobierno de un estado."@es .
+
+:CapitalNacional rdf:type owl:Class ;
+    rdfs:subClassOf :Ciudad ;
+    rdfs:label "Capital Nacional"@es ;
+    rdfs:comment "Ciudad sede del gobierno federal de un pais."@es .
+
+:Frontera rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:label "Frontera"@es ;
+    rdfs:comment "Limite geografico entre dos entidades territoriales."@es .
+
+:FronteraInternacional rdf:type owl:Class ;
+    rdfs:subClassOf :Frontera ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :conecta ;
+        owl:qualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+        owl:onClass :Pais
+    ] ;
+    rdfs:label "Frontera Internacional"@es ;
+    rdfs:comment "Limite que separa territorios de diferentes paises."@es .
+
+:FronteraEstatal rdf:type owl:Class ;
+    rdfs:subClassOf :Frontera ;
+    rdfs:label "Frontera Estatal"@es ;
+    rdfs:comment "Limite que separa entidades federativas dentro de un pais."@es .
+
+:RegionGeografica rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:label "Region Geografica"@es ;
+    rdfs:comment "Area que agrupa multiples entidades con caracteristicas comunes."@es .
+
+:Municipio rdf:type owl:Class ;
+    rdfs:subClassOf :EntidadGeografica ;
+    rdfs:label "Municipio"@es ;
+    rdfs:comment "Division administrativa dentro de un estado."@es .
+
+:CuerpoDeAgua rdf:type owl:Class ;
+    rdfs:label "Cuerpo de Agua"@es ;
+    rdfs:comment "Oceano, mar, golfo o lago."@es .
+
+# ============================================================
+# PROPIEDADES DE OBJETO (Object Properties)
+# ============================================================
+
+:perteneceA rdf:type owl:ObjectProperty ;
+    rdfs:label "pertenece a"@es ;
+    rdfs:comment "Indica que una entidad geografica es parte de otra entidad mayor."@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range :EntidadGeografica .
+
+:contiene rdf:type owl:ObjectProperty ;
+    rdfs:label "contiene"@es ;
+    rdfs:comment "Indica que una entidad geografica incluye a otras entidades."@es ;
+    owl:inverseOf :perteneceA ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range :EntidadGeografica .
+
+:esCapitalDe rdf:type owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "es capital de"@es ;
+    rdfs:comment "Indica que una ciudad es la capital de un estado o pais."@es ;
+    rdfs:domain :Ciudad .
+
+:tieneCapital rdf:type owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "tiene capital"@es ;
+    rdfs:comment "Indica la capital de un estado o pais."@es ;
+    owl:inverseOf :esCapitalDe .
+
+:limitaCon rdf:type owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:label "limita con"@es ;
+    rdfs:comment "Indica que dos entidades geograficas comparten frontera."@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range :EntidadGeografica .
+
+:tieneFronteraCon rdf:type owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:subPropertyOf :limitaCon ;
+    rdfs:label "tiene frontera con"@es ;
+    rdfs:comment "Relaciona paises que comparten frontera internacional."@es ;
+    rdfs:domain :Pais ;
+    rdfs:range :Pais .
+
+:perteneceARegion rdf:type owl:ObjectProperty ;
+    rdfs:label "pertenece a region"@es ;
+    rdfs:comment "Indica la region geografica a la que pertenece un estado."@es ;
+    rdfs:domain :Estado ;
+    rdfs:range :RegionGeografica .
+
+:tieneAccesoAMar rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene acceso a mar"@es ;
+    rdfs:comment "Indica si una entidad tiene costa maritima."@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range :CuerpoDeAgua .
+
+:conecta rdf:type owl:ObjectProperty ;
+    rdfs:label "conecta"@es ;
+    rdfs:comment "Indica las entidades que una frontera separa/conecta."@es ;
+    rdfs:domain :Frontera ;
+    rdfs:range :EntidadGeografica .
+
+# ============================================================
+# PROPIEDADES DE DATOS (Data Properties)
+# ============================================================
+
+:nombre rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nombre"@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range xsd:string .
+
+:poblacion rdf:type owl:DatatypeProperty ;
+    rdfs:label "poblacion"@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range xsd:integer .
+
+:superficie rdf:type owl:DatatypeProperty ;
+    rdfs:label "superficie"@es ;
+    rdfs:comment "Area en kilometros cuadrados."@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range xsd:decimal .
+
+:codigoISO rdf:type owl:DatatypeProperty ;
+    rdfs:label "codigo ISO"@es ;
+    rdfs:domain :Estado ;
+    rdfs:range xsd:string .
+
+:latitud rdf:type owl:DatatypeProperty ;
+    rdfs:label "latitud"@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range xsd:decimal .
+
+:longitud rdf:type owl:DatatypeProperty ;
+    rdfs:label "longitud"@es ;
+    rdfs:domain :EntidadGeografica ;
+    rdfs:range xsd:decimal .
+
+:longitudFrontera rdf:type owl:DatatypeProperty ;
+    rdfs:label "longitud de frontera"@es ;
+    rdfs:comment "Longitud de la frontera en kilometros."@es ;
+    rdfs:domain :Frontera ;
+    rdfs:range xsd:decimal .
+
+# ============================================================
+# INSTANCIAS: PAISES
+# ============================================================
+
+:Mexico rdf:type owl:NamedIndividual , :Pais ;
+    :nombre "Estados Unidos Mexicanos" ;
+    :poblacion 126014024 ;
+    :superficie 1964375 ;
+    :codigoISO "MX" ;
+    :tieneFronteraCon :EstadosUnidos , :Guatemala , :Belice .
+
+:EstadosUnidos rdf:type owl:NamedIndividual , :Pais ;
+    :nombre "Estados Unidos de America" .
+
+:Guatemala rdf:type owl:NamedIndividual , :Pais ;
+    :nombre "Republica de Guatemala" .
+
+:Belice rdf:type owl:NamedIndividual , :Pais ;
+    :nombre "Belice" .
+
+# ============================================================
+# INSTANCIAS: REGIONES DE MEXICO
+# ============================================================
+
+:RegionNoroeste rdf:type owl:NamedIndividual , :RegionGeografica ;
+    :nombre "Region Noroeste" .
+
+:RegionNoreste rdf:type owl:NamedIndividual , :RegionGeografica ;
+    :nombre "Region Noreste" .
+
+:RegionOccidente rdf:type owl:NamedIndividual , :RegionGeografica ;
+    :nombre "Region Occidente" .
+
+:RegionCentro rdf:type owl:NamedIndividual , :RegionGeografica ;
+    :nombre "Region Centro" .
+
+:RegionSureste rdf:type owl:NamedIndividual , :RegionGeografica ;
+    :nombre "Region Sureste" .
+
+# ============================================================
+# INSTANCIAS: CUERPOS DE AGUA
+# ============================================================
+
+:OceanoPacifico rdf:type owl:NamedIndividual , :CuerpoDeAgua ;
+    :nombre "Oceano Pacifico" .
+
+:GolfoDeMexico rdf:type owl:NamedIndividual , :CuerpoDeAgua ;
+    :nombre "Golfo de Mexico" .
+
+:MarCaribe rdf:type owl:NamedIndividual , :CuerpoDeAgua ;
+    :nombre "Mar Caribe" .
+
+:GolfoDeCalfornia rdf:type owl:NamedIndividual , :CuerpoDeAgua ;
+    :nombre "Golfo de California" .
+
+# ============================================================
+# INSTANCIAS: ESTADOS Y CAPITALES (Muestra representativa)
+# ============================================================
+
+# --- SONORA ---
+:Sonora rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Sonora" ;
+    :codigoISO "MX-SON" ;
+    :poblacion 2944840 ;
+    :superficie 179503 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoroeste ;
+    :limitaCon :Chihuahua , :Sinaloa , :BajaCalifornia ;
+    :tieneAccesoAMar :GolfoDeCalfornia , :OceanoPacifico ;
+    :tieneCapital :Hermosillo .
+
+:Hermosillo rdf:type owl:NamedIndividual , :CapitalEstatal ;
+    :nombre "Hermosillo" ;
+    :poblacion 936263 ;
+    :latitud 29.0729 ;
+    :longitud -110.9559 ;
+    :perteneceA :Sonora ;
+    :esCapitalDe :Sonora .
+
+# --- CHIHUAHUA ---
+:Chihuahua rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Chihuahua" ;
+    :codigoISO "MX-CHH" ;
+    :poblacion 3741869 ;
+    :superficie 247455 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoroeste ;
+    :limitaCon :Sonora , :Sinaloa , :Durango , :Coahuila ;
+    :tieneCapital :ChihuahuaCiudad .
+
+:ChihuahuaCiudad rdf:type owl:NamedIndividual , :CapitalEstatal ;
+    :nombre "Chihuahua" ;
+    :poblacion 925762 ;
+    :latitud 28.6353 ;
+    :longitud -106.0889 ;
+    :perteneceA :Chihuahua ;
+    :esCapitalDe :Chihuahua .
+
+# --- NUEVO LEON ---
+:NuevoLeon rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Nuevo Leon" ;
+    :codigoISO "MX-NLE" ;
+    :poblacion 5784442 ;
+    :superficie 64220 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoreste ;
+    :limitaCon :Coahuila , :Tamaulipas , :SanLuisPotosi , :Zacatecas ;
+    :tieneCapital :Monterrey .
+
+:Monterrey rdf:type owl:NamedIndividual , :CapitalEstatal ;
+    :nombre "Monterrey" ;
+    :poblacion 1142994 ;
+    :latitud 25.6866 ;
+    :longitud -100.3161 ;
+    :perteneceA :NuevoLeon ;
+    :esCapitalDe :NuevoLeon .
+
+# --- JALISCO ---
+:Jalisco rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Jalisco" ;
+    :codigoISO "MX-JAL" ;
+    :poblacion 8348151 ;
+    :superficie 78599 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionOccidente ;
+    :limitaCon :Nayarit , :Zacatecas , :Aguascalientes , :Guanajuato , :Michoacan , :Colima ;
+    :tieneAccesoAMar :OceanoPacifico ;
+    :tieneCapital :Guadalajara .
+
+:Guadalajara rdf:type owl:NamedIndividual , :CapitalEstatal ;
+    :nombre "Guadalajara" ;
+    :poblacion 1385629 ;
+    :latitud 20.6597 ;
+    :longitud -103.3496 ;
+    :perteneceA :Jalisco ;
+    :esCapitalDe :Jalisco .
+
+# --- CIUDAD DE MEXICO ---
+:CiudadDeMexico rdf:type owl:NamedIndividual , :Estado , :CapitalNacional ;
+    :nombre "Ciudad de Mexico" ;
+    :codigoISO "MX-CMX" ;
+    :poblacion 9209944 ;
+    :superficie 1485 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionCentro ;
+    :limitaCon :EstadoDeMexico ;
+    :esCapitalDe :Mexico ;
+    :latitud 19.4326 ;
+    :longitud -99.1332 .
+
+# --- QUINTANA ROO ---
+:QuintanaRoo rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Quintana Roo" ;
+    :codigoISO "MX-ROO" ;
+    :poblacion 1857985 ;
+    :superficie 42361 ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionSureste ;
+    :limitaCon :Yucatan , :Campeche ;
+    :tieneAccesoAMar :MarCaribe ;
+    :tieneCapital :Chetumal .
+
+:Chetumal rdf:type owl:NamedIndividual , :CapitalEstatal ;
+    :nombre "Chetumal" ;
+    :poblacion 224080 ;
+    :latitud 18.5001 ;
+    :longitud -88.2961 ;
+    :perteneceA :QuintanaRoo ;
+    :esCapitalDe :QuintanaRoo .
+
+# --- ESTADOS ADICIONALES (referenciados en relaciones) ---
+:Sinaloa rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Sinaloa" ;
+    :codigoISO "MX-SIN" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoroeste .
+
+:BajaCalifornia rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Baja California" ;
+    :codigoISO "MX-BCN" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoroeste .
+
+:Durango rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Durango" ;
+    :codigoISO "MX-DUR" ;
+    :perteneceA :Mexico .
+
+:Coahuila rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Coahuila de Zaragoza" ;
+    :codigoISO "MX-COA" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoreste .
+
+:Tamaulipas rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Tamaulipas" ;
+    :codigoISO "MX-TAM" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionNoreste .
+
+:SanLuisPotosi rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "San Luis Potosi" ;
+    :codigoISO "MX-SLP" ;
+    :perteneceA :Mexico .
+
+:Zacatecas rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Zacatecas" ;
+    :codigoISO "MX-ZAC" ;
+    :perteneceA :Mexico .
+
+:Nayarit rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Nayarit" ;
+    :codigoISO "MX-NAY" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionOccidente .
+
+:Aguascalientes rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Aguascalientes" ;
+    :codigoISO "MX-AGU" ;
+    :perteneceA :Mexico .
+
+:Guanajuato rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Guanajuato" ;
+    :codigoISO "MX-GUA" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionCentro .
+
+:Michoacan rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Michoacan de Ocampo" ;
+    :codigoISO "MX-MIC" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionOccidente .
+
+:Colima rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Colima" ;
+    :codigoISO "MX-COL" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionOccidente .
+
+:EstadoDeMexico rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Estado de Mexico" ;
+    :codigoISO "MX-MEX" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionCentro .
+
+:Yucatan rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Yucatan" ;
+    :codigoISO "MX-YUC" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionSureste .
+
+:Campeche rdf:type owl:NamedIndividual , :Estado ;
+    :nombre "Campeche" ;
+    :codigoISO "MX-CAM" ;
+    :perteneceA :Mexico ;
+    :perteneceARegion :RegionSureste .
+
+# ============================================================
+# INSTANCIAS: FRONTERAS INTERNACIONALES
+# ============================================================
+
+:FronteraMexicoEUA rdf:type owl:NamedIndividual , :FronteraInternacional ;
+    :nombre "Frontera Mexico - Estados Unidos" ;
+    :longitudFrontera 3145 ;
+    :conecta :Mexico , :EstadosUnidos .
+
+:FronteraMexicoGuatemala rdf:type owl:NamedIndividual , :FronteraInternacional ;
+    :nombre "Frontera Mexico - Guatemala" ;
+    :longitudFrontera 958 ;
+    :conecta :Mexico , :Guatemala .
+
+:FronteraMexicoBelice rdf:type owl:NamedIndividual , :FronteraInternacional ;
+    :nombre "Frontera Mexico - Belice" ;
+    :longitudFrontera 276 ;
+    :conecta :Mexico , :Belice .
+
+# ============================================================
+# INSTANCIAS: CIUDADES ADICIONALES
+# ============================================================
+
+:CiudadJuarez rdf:type owl:NamedIndividual , :Ciudad ;
+    :nombre "Ciudad Juarez" ;
+    :poblacion 1512450 ;
+    :latitud 31.6904 ;
+    :longitud -106.4245 ;
+    :perteneceA :Chihuahua .
+
+:Cancun rdf:type owl:NamedIndividual , :Ciudad ;
+    :nombre "Cancun" ;
+    :poblacion 888797 ;
+    :latitud 21.1619 ;
+    :longitud -86.8515 ;
+    :perteneceA :QuintanaRoo .
+
+:Tijuana rdf:type owl:NamedIndividual , :Ciudad ;
+    :nombre "Tijuana" ;
+    :poblacion 1922523 ;
+    :latitud 32.5149 ;
+    :longitud -117.0382 ;
+    :perteneceA :BajaCalifornia .
