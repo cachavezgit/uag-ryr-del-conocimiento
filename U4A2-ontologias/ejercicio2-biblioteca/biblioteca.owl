@@ -1,0 +1,664 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.uag.mx/ontologias/biblioteca#"
+     xml:base="http://www.uag.mx/ontologias/biblioteca"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+    <!-- ============================================================ -->
+    <!-- ONTOLOGÍA: Sistema de Biblioteca                              -->
+    <!-- ============================================================ -->
+
+    <owl:Ontology rdf:about="http://www.uag.mx/ontologias/biblioteca">
+        <dc:title xml:lang="es">Ontología de Sistema de Biblioteca</dc:title>
+        <dc:description xml:lang="es">Modela los conceptos fundamentales de una biblioteca: libros, autores, editores, copias físicas, préstamos, usuarios y categorías temáticas.</dc:description>
+        <dc:creator>Ivan — UAG</dc:creator>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- ============================================================ -->
+    <!-- CLASES                                                        -->
+    <!-- ============================================================ -->
+
+    <owl:Class rdf:about="#RecursoBibliografico">
+        <rdfs:label xml:lang="es">Recurso Bibliográfico</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Libro">
+        <rdfs:subClassOf rdf:resource="#RecursoBibliografico"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#escritoPor"/>
+                <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#isbn"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#publicadoPor"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Libro</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Revista">
+        <rdfs:subClassOf rdf:resource="#RecursoBibliografico"/>
+        <rdfs:label xml:lang="es">Revista</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Tesis">
+        <rdfs:subClassOf rdf:resource="#RecursoBibliografico"/>
+        <rdfs:label xml:lang="es">Tesis</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Persona">
+        <rdfs:label xml:lang="es">Persona</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Autor">
+        <rdfs:subClassOf rdf:resource="#Persona"/>
+        <rdfs:label xml:lang="es">Autor</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Editor">
+        <rdfs:subClassOf rdf:resource="#Persona"/>
+        <rdfs:label xml:lang="es">Editor</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Usuario">
+        <rdfs:subClassOf rdf:resource="#Persona"/>
+        <rdfs:label xml:lang="es">Usuario</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Estudiante">
+        <rdfs:subClassOf rdf:resource="#Usuario"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#tienePrestamo"/>
+                <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">3</owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Estudiante</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Profesor">
+        <rdfs:subClassOf rdf:resource="#Usuario"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#tienePrestamo"/>
+                <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">5</owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Profesor</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Editorial">
+        <rdfs:label xml:lang="es">Editorial</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#CopiaFisica">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#esCopiade"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#ubicadaEn"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Copia Física</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Prestamo">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#involucra"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#realizadoPor"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Préstamo</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Categoria">
+        <rdfs:label xml:lang="es">Categoría</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Biblioteca">
+        <rdfs:label xml:lang="es">Biblioteca</rdfs:label>
+    </owl:Class>
+
+    <!-- Clases disjuntas -->
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#Libro"/>
+            <rdf:Description rdf:about="#Revista"/>
+            <rdf:Description rdf:about="#Tesis"/>
+        </owl:members>
+    </rdf:Description>
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#Estudiante"/>
+            <rdf:Description rdf:about="#Profesor"/>
+        </owl:members>
+    </rdf:Description>
+
+    <!-- ============================================================ -->
+    <!-- OBJECT PROPERTIES                                             -->
+    <!-- ============================================================ -->
+
+    <owl:ObjectProperty rdf:about="#escritoPor">
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="#Autor"/>
+        <rdfs:label xml:lang="es">escrito por</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#editadoPor">
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="#Editor"/>
+        <rdfs:label xml:lang="es">editado por</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#publicadoPor">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="#Editorial"/>
+        <rdfs:label xml:lang="es">publicado por</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#tieneCopia">
+        <owl:inverseOf rdf:resource="#esCopiade"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="#CopiaFisica"/>
+        <rdfs:label xml:lang="es">tiene copia</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#esCopiade">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#CopiaFisica"/>
+        <rdfs:range rdf:resource="#RecursoBibliografico"/>
+        <rdfs:label xml:lang="es">es copia de</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#realizadoPor">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="#Usuario"/>
+        <rdfs:label xml:lang="es">realizado por</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#involucra">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="#CopiaFisica"/>
+        <rdfs:label xml:lang="es">involucra</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#tienePrestamo">
+        <rdfs:domain rdf:resource="#Usuario"/>
+        <rdfs:range rdf:resource="#Prestamo"/>
+        <rdfs:label xml:lang="es">tiene préstamo</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#perteneceACategoria">
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="#Categoria"/>
+        <rdfs:label xml:lang="es">pertenece a categoría</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#tieneSubcategoria">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="#Categoria"/>
+        <rdfs:range rdf:resource="#Categoria"/>
+        <rdfs:label xml:lang="es">tiene subcategoría</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#ubicadaEn">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#CopiaFisica"/>
+        <rdfs:range rdf:resource="#Biblioteca"/>
+        <rdfs:label xml:lang="es">ubicada en</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#alberga">
+        <owl:inverseOf rdf:resource="#ubicadaEn"/>
+        <rdfs:domain rdf:resource="#Biblioteca"/>
+        <rdfs:range rdf:resource="#CopiaFisica"/>
+        <rdfs:label xml:lang="es">alberga</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- ============================================================ -->
+    <!-- DATA PROPERTIES                                               -->
+    <!-- ============================================================ -->
+
+    <owl:DatatypeProperty rdf:about="#titulo">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#isbn">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Libro"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#issn">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Revista"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#anioPublicacion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#fechaPublicacion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#idioma">
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#numeroPaginas">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#edicion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RecursoBibliografico"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#nombre">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Persona"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#fechaNacimiento">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Persona"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#nacionalidad">
+        <rdfs:domain rdf:resource="#Persona"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#correoElectronico">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Usuario"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#matricula">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Estudiante"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#numEmpleado">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Profesor"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#nombreEditorial">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Editorial"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#paisEditorial">
+        <rdfs:domain rdf:resource="#Editorial"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#codigoBarras">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#CopiaFisica"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#estado">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#CopiaFisica"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#estante">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#CopiaFisica"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#fechaPrestamo">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#fechaDevolucion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#fechaLimite">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#multa">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Prestamo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#nombreCategoria">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Categoria"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#nombreBiblioteca">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Biblioteca"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="#direccion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Biblioteca"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- ============================================================ -->
+    <!-- INDIVIDUOS (ABox)                                             -->
+    <!-- ============================================================ -->
+
+    <!-- Categorías -->
+    <owl:NamedIndividual rdf:about="#Ciencia">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ciencia</nombreCategoria>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Computacion">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Computación</nombreCategoria>
+        <tieneSubcategoria rdf:resource="#InteligenciaArtificial"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#InteligenciaArtificial">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inteligencia Artificial</nombreCategoria>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Literatura">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Literatura</nombreCategoria>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Historia">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Historia</nombreCategoria>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Matematicas">
+        <rdf:type rdf:resource="#Categoria"/>
+        <nombreCategoria rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Matemáticas</nombreCategoria>
+    </owl:NamedIndividual>
+
+    <!-- Editoriales -->
+    <owl:NamedIndividual rdf:about="#Pearson">
+        <rdf:type rdf:resource="#Editorial"/>
+        <nombreEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pearson Education</nombreEditorial>
+        <paisEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Estados Unidos</paisEditorial>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Springer">
+        <rdf:type rdf:resource="#Editorial"/>
+        <nombreEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Springer</nombreEditorial>
+        <paisEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alemania</paisEditorial>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#OReilly">
+        <rdf:type rdf:resource="#Editorial"/>
+        <nombreEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">O'Reilly Media</nombreEditorial>
+        <paisEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Estados Unidos</paisEditorial>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#FCE">
+        <rdf:type rdf:resource="#Editorial"/>
+        <nombreEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fondo de Cultura Económica</nombreEditorial>
+        <paisEditorial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">México</paisEditorial>
+    </owl:NamedIndividual>
+
+    <!-- Autores -->
+    <owl:NamedIndividual rdf:about="#StuartRussell">
+        <rdf:type rdf:resource="#Autor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Stuart Russell</nombre>
+        <nacionalidad rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Reino Unido</nacionalidad>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#PeterNorvig">
+        <rdf:type rdf:resource="#Autor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Peter Norvig</nombre>
+        <nacionalidad rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Estados Unidos</nacionalidad>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#ThomasCormen">
+        <rdf:type rdf:resource="#Autor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Thomas H. Cormen</nombre>
+        <nacionalidad rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Estados Unidos</nacionalidad>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#GabrielGarciaMarquez">
+        <rdf:type rdf:resource="#Autor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Gabriel García Márquez</nombre>
+        <nacionalidad rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Colombia</nacionalidad>
+        <fechaNacimiento rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1927-03-06</fechaNacimiento>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#OctavioPaz">
+        <rdf:type rdf:resource="#Autor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Octavio Paz</nombre>
+        <nacionalidad rdf:datatype="http://www.w3.org/2001/XMLSchema#string">México</nacionalidad>
+        <fechaNacimiento rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1914-03-31</fechaNacimiento>
+    </owl:NamedIndividual>
+
+    <!-- Editor -->
+    <owl:NamedIndividual rdf:about="#EditorJohnSmith">
+        <rdf:type rdf:resource="#Editor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">John Smith</nombre>
+    </owl:NamedIndividual>
+
+    <!-- Libros -->
+    <owl:NamedIndividual rdf:about="#AIMA">
+        <rdf:type rdf:resource="#Libro"/>
+        <titulo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Artificial Intelligence: A Modern Approach</titulo>
+        <isbn rdf:datatype="http://www.w3.org/2001/XMLSchema#string">978-0134610993</isbn>
+        <anioPublicacion rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2020</anioPublicacion>
+        <numeroPaginas rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">1115</numeroPaginas>
+        <edicion rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">4</edicion>
+        <idioma rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inglés</idioma>
+        <escritoPor rdf:resource="#StuartRussell"/>
+        <escritoPor rdf:resource="#PeterNorvig"/>
+        <publicadoPor rdf:resource="#Pearson"/>
+        <editadoPor rdf:resource="#EditorJohnSmith"/>
+        <perteneceACategoria rdf:resource="#InteligenciaArtificial"/>
+        <perteneceACategoria rdf:resource="#Computacion"/>
+        <tieneCopia rdf:resource="#CopiaAIMA_01"/>
+        <tieneCopia rdf:resource="#CopiaAIMA_02"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#IntroAlgoritmos">
+        <rdf:type rdf:resource="#Libro"/>
+        <titulo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Introduction to Algorithms</titulo>
+        <isbn rdf:datatype="http://www.w3.org/2001/XMLSchema#string">978-0262046305</isbn>
+        <anioPublicacion rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2022</anioPublicacion>
+        <numeroPaginas rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">1312</numeroPaginas>
+        <edicion rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">4</edicion>
+        <idioma rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inglés</idioma>
+        <escritoPor rdf:resource="#ThomasCormen"/>
+        <publicadoPor rdf:resource="#Springer"/>
+        <perteneceACategoria rdf:resource="#Computacion"/>
+        <perteneceACategoria rdf:resource="#Matematicas"/>
+        <tieneCopia rdf:resource="#CopiaAlgoritmos_01"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CienAnios">
+        <rdf:type rdf:resource="#Libro"/>
+        <titulo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cien años de soledad</titulo>
+        <isbn rdf:datatype="http://www.w3.org/2001/XMLSchema#string">978-0307474728</isbn>
+        <anioPublicacion rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1967</anioPublicacion>
+        <numeroPaginas rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">471</numeroPaginas>
+        <edicion rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">1</edicion>
+        <idioma rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Español</idioma>
+        <escritoPor rdf:resource="#GabrielGarciaMarquez"/>
+        <publicadoPor rdf:resource="#FCE"/>
+        <perteneceACategoria rdf:resource="#Literatura"/>
+        <tieneCopia rdf:resource="#CopiaCienAnios_01"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#LaberintoSoledad">
+        <rdf:type rdf:resource="#Libro"/>
+        <titulo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">El laberinto de la soledad</titulo>
+        <isbn rdf:datatype="http://www.w3.org/2001/XMLSchema#string">978-0802150424</isbn>
+        <anioPublicacion rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1950</anioPublicacion>
+        <numeroPaginas rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">310</numeroPaginas>
+        <edicion rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">1</edicion>
+        <idioma rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Español</idioma>
+        <escritoPor rdf:resource="#OctavioPaz"/>
+        <publicadoPor rdf:resource="#FCE"/>
+        <perteneceACategoria rdf:resource="#Literatura"/>
+        <perteneceACategoria rdf:resource="#Historia"/>
+        <tieneCopia rdf:resource="#CopiaLaberinto_01"/>
+    </owl:NamedIndividual>
+
+    <!-- Biblioteca -->
+    <owl:NamedIndividual rdf:about="#BibliotecaCentralUAG">
+        <rdf:type rdf:resource="#Biblioteca"/>
+        <nombreBiblioteca rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biblioteca Central UAG</nombreBiblioteca>
+        <direccion rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Av. Patria 1201, Lomas del Valle, Zapopan, Jalisco, México</direccion>
+    </owl:NamedIndividual>
+
+    <!-- Copias Físicas -->
+    <owl:NamedIndividual rdf:about="#CopiaAIMA_01">
+        <rdf:type rdf:resource="#CopiaFisica"/>
+        <codigoBarras rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BC-AIMA-001</codigoBarras>
+        <estado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">disponible</estado>
+        <estante rdf:datatype="http://www.w3.org/2001/XMLSchema#string">E3-A12</estante>
+        <esCopiade rdf:resource="#AIMA"/>
+        <ubicadaEn rdf:resource="#BibliotecaCentralUAG"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CopiaAIMA_02">
+        <rdf:type rdf:resource="#CopiaFisica"/>
+        <codigoBarras rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BC-AIMA-002</codigoBarras>
+        <estado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">prestado</estado>
+        <estante rdf:datatype="http://www.w3.org/2001/XMLSchema#string">E3-A12</estante>
+        <esCopiade rdf:resource="#AIMA"/>
+        <ubicadaEn rdf:resource="#BibliotecaCentralUAG"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CopiaCienAnios_01">
+        <rdf:type rdf:resource="#CopiaFisica"/>
+        <codigoBarras rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BC-CAS-001</codigoBarras>
+        <estado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">disponible</estado>
+        <estante rdf:datatype="http://www.w3.org/2001/XMLSchema#string">E1-B05</estante>
+        <esCopiade rdf:resource="#CienAnios"/>
+        <ubicadaEn rdf:resource="#BibliotecaCentralUAG"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CopiaAlgoritmos_01">
+        <rdf:type rdf:resource="#CopiaFisica"/>
+        <codigoBarras rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BC-ALG-001</codigoBarras>
+        <estado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">disponible</estado>
+        <estante rdf:datatype="http://www.w3.org/2001/XMLSchema#string">E3-A15</estante>
+        <esCopiade rdf:resource="#IntroAlgoritmos"/>
+        <ubicadaEn rdf:resource="#BibliotecaCentralUAG"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CopiaLaberinto_01">
+        <rdf:type rdf:resource="#CopiaFisica"/>
+        <codigoBarras rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BC-LAB-001</codigoBarras>
+        <estado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">prestado</estado>
+        <estante rdf:datatype="http://www.w3.org/2001/XMLSchema#string">E1-B08</estante>
+        <esCopiade rdf:resource="#LaberintoSoledad"/>
+        <ubicadaEn rdf:resource="#BibliotecaCentralUAG"/>
+    </owl:NamedIndividual>
+
+    <!-- Usuarios -->
+    <owl:NamedIndividual rdf:about="#MariaLopez">
+        <rdf:type rdf:resource="#Estudiante"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">María López García</nombre>
+        <correoElectronico rdf:datatype="http://www.w3.org/2001/XMLSchema#string">maria.lopez@uag.mx</correoElectronico>
+        <matricula rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MAT-2024-0512</matricula>
+        <tienePrestamo rdf:resource="#Prestamo001"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#CarlosRamirez">
+        <rdf:type rdf:resource="#Estudiante"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Carlos Ramírez Soto</nombre>
+        <correoElectronico rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carlos.ramirez@uag.mx</correoElectronico>
+        <matricula rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MAT-2023-0198</matricula>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#DraSilvia">
+        <rdf:type rdf:resource="#Profesor"/>
+        <nombre rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Dra. Silvia Hernández Torres</nombre>
+        <correoElectronico rdf:datatype="http://www.w3.org/2001/XMLSchema#string">silvia.hernandez@uag.mx</correoElectronico>
+        <numEmpleado rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EMP-1087</numEmpleado>
+        <tienePrestamo rdf:resource="#Prestamo002"/>
+    </owl:NamedIndividual>
+
+    <!-- Préstamos -->
+    <owl:NamedIndividual rdf:about="#Prestamo001">
+        <rdf:type rdf:resource="#Prestamo"/>
+        <realizadoPor rdf:resource="#MariaLopez"/>
+        <involucra rdf:resource="#CopiaAIMA_02"/>
+        <fechaPrestamo rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-03-15</fechaPrestamo>
+        <fechaLimite rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-04-15</fechaLimite>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Prestamo002">
+        <rdf:type rdf:resource="#Prestamo"/>
+        <realizadoPor rdf:resource="#DraSilvia"/>
+        <involucra rdf:resource="#CopiaLaberinto_01"/>
+        <fechaPrestamo rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-03-20</fechaPrestamo>
+        <fechaLimite rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-05-20</fechaLimite>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

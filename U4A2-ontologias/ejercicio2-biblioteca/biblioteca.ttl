@@ -1,0 +1,585 @@
+@prefix : <http://www.uag.mx/ontologias/biblioteca#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+# ============================================================
+# ONTOLOGÍA: Sistema de Biblioteca
+# Namespace: http://www.uag.mx/ontologias/biblioteca#
+# Autor: Ivan — UAG, Maestría en Inteligencia Artificial
+# Curso: Razonamiento y Representación del Conocimiento
+# ============================================================
+
+<http://www.uag.mx/ontologias/biblioteca> rdf:type owl:Ontology ;
+    dc:title "Ontología de Sistema de Biblioteca"@es ;
+    dc:description "Modela los conceptos fundamentales de una biblioteca: libros, autores, editores, copias físicas, préstamos, usuarios y categorías temáticas."@es ;
+    dc:creator "Ivan — UAG" ;
+    owl:versionInfo "1.0" .
+
+# ============================================================
+# CLASES PRINCIPALES
+# ============================================================
+
+:RecursoBibliografico rdf:type owl:Class ;
+    rdfs:label "Recurso Bibliográfico"@es ;
+    rdfs:comment "Clase abstracta que agrupa todo material disponible en la biblioteca."@es .
+
+:Libro rdf:type owl:Class ;
+    rdfs:subClassOf :RecursoBibliografico ;
+    rdfs:label "Libro"@es ;
+    rdfs:comment "Obra literaria o académica identificada por un ISBN."@es .
+
+:Revista rdf:type owl:Class ;
+    rdfs:subClassOf :RecursoBibliografico ;
+    rdfs:label "Revista"@es ;
+    rdfs:comment "Publicación periódica con ISSN."@es .
+
+:Tesis rdf:type owl:Class ;
+    rdfs:subClassOf :RecursoBibliografico ;
+    rdfs:label "Tesis"@es ;
+    rdfs:comment "Trabajo de grado universitario."@es .
+
+:Persona rdf:type owl:Class ;
+    rdfs:label "Persona"@es ;
+    rdfs:comment "Cualquier persona relacionada con la biblioteca."@es .
+
+:Autor rdf:type owl:Class ;
+    rdfs:subClassOf :Persona ;
+    rdfs:label "Autor"@es ;
+    rdfs:comment "Persona que escribe o contribuye a un recurso bibliográfico."@es .
+
+:Editor rdf:type owl:Class ;
+    rdfs:subClassOf :Persona ;
+    rdfs:label "Editor"@es ;
+    rdfs:comment "Persona responsable de la edición de un recurso."@es .
+
+:Usuario rdf:type owl:Class ;
+    rdfs:subClassOf :Persona ;
+    rdfs:label "Usuario"@es ;
+    rdfs:comment "Persona registrada que puede realizar préstamos."@es .
+
+:Estudiante rdf:type owl:Class ;
+    rdfs:subClassOf :Usuario ;
+    rdfs:label "Estudiante"@es ;
+    rdfs:comment "Usuario con matrícula estudiantil activa."@es .
+
+:Profesor rdf:type owl:Class ;
+    rdfs:subClassOf :Usuario ;
+    rdfs:label "Profesor"@es ;
+    rdfs:comment "Usuario con rol de docente en la institución."@es .
+
+:Editorial rdf:type owl:Class ;
+    rdfs:label "Editorial"@es ;
+    rdfs:comment "Organización que publica recursos bibliográficos."@es .
+
+:CopiaFisica rdf:type owl:Class ;
+    rdfs:label "Copia Física"@es ;
+    rdfs:comment "Ejemplar concreto de un recurso bibliográfico con ubicación en estantería."@es .
+
+:Prestamo rdf:type owl:Class ;
+    rdfs:label "Préstamo"@es ;
+    rdfs:comment "Evento de préstamo de una copia física a un usuario."@es .
+
+:Categoria rdf:type owl:Class ;
+    rdfs:label "Categoría"@es ;
+    rdfs:comment "Clasificación temática de los recursos (ej. Ciencia, Literatura, Historia)."@es .
+
+:Biblioteca rdf:type owl:Class ;
+    rdfs:label "Biblioteca"@es ;
+    rdfs:comment "Institución o sede que alberga la colección."@es .
+
+# ============================================================
+# CLASES DISJUNTAS
+# ============================================================
+
+[] rdf:type owl:AllDisjointClasses ;
+    owl:members ( :Libro :Revista :Tesis ) .
+
+[] rdf:type owl:AllDisjointClasses ;
+    owl:members ( :Estudiante :Profesor ) .
+
+[] rdf:type owl:AllDisjointClasses ;
+    owl:members ( :Persona :Editorial :CopiaFisica :Prestamo :Categoria :Biblioteca :RecursoBibliografico ) .
+
+# ============================================================
+# PROPIEDADES DE OBJETO (Object Properties)
+# ============================================================
+
+# --- Autoría y edición ---
+:escritoPor rdf:type owl:ObjectProperty ;
+    rdfs:label "escrito por"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range :Autor .
+
+:editadoPor rdf:type owl:ObjectProperty ;
+    rdfs:label "editado por"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range :Editor .
+
+:publicadoPor rdf:type owl:ObjectProperty ;
+    rdfs:label "publicado por"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range :Editorial ;
+    rdf:type owl:FunctionalProperty .
+
+# --- Copias ---
+:tieneCopia rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene copia"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range :CopiaFisica ;
+    owl:inverseOf :esCopiade .
+
+:esCopiade rdf:type owl:ObjectProperty ;
+    rdfs:label "es copia de"@es ;
+    rdfs:domain :CopiaFisica ;
+    rdfs:range :RecursoBibliografico ;
+    rdf:type owl:FunctionalProperty .
+
+# --- Préstamos ---
+:realizadoPor rdf:type owl:ObjectProperty ;
+    rdfs:label "realizado por"@es ;
+    rdfs:comment "Usuario que solicita el préstamo."@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range :Usuario ;
+    rdf:type owl:FunctionalProperty .
+
+:involucra rdf:type owl:ObjectProperty ;
+    rdfs:label "involucra"@es ;
+    rdfs:comment "Copia física prestada."@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range :CopiaFisica ;
+    rdf:type owl:FunctionalProperty .
+
+:tienePrestamo rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene préstamo"@es ;
+    rdfs:domain :Usuario ;
+    rdfs:range :Prestamo .
+
+# --- Categorías ---
+:perteneceACategoria rdf:type owl:ObjectProperty ;
+    rdfs:label "pertenece a categoría"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range :Categoria .
+
+:tieneSubcategoria rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene subcategoría"@es ;
+    rdfs:domain :Categoria ;
+    rdfs:range :Categoria ;
+    rdf:type owl:TransitiveProperty .
+
+# --- Biblioteca ---
+:ubicadaEn rdf:type owl:ObjectProperty ;
+    rdfs:label "ubicada en"@es ;
+    rdfs:domain :CopiaFisica ;
+    rdfs:range :Biblioteca ;
+    rdf:type owl:FunctionalProperty .
+
+:alberga rdf:type owl:ObjectProperty ;
+    rdfs:label "alberga"@es ;
+    rdfs:domain :Biblioteca ;
+    rdfs:range :CopiaFisica ;
+    owl:inverseOf :ubicadaEn .
+
+# ============================================================
+# PROPIEDADES DE DATOS (Data Properties)
+# ============================================================
+
+# --- Recurso Bibliográfico ---
+:titulo rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "título"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:string .
+
+:isbn rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "ISBN"@es ;
+    rdfs:domain :Libro ;
+    rdfs:range xsd:string .
+
+:issn rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "ISSN"@es ;
+    rdfs:domain :Revista ;
+    rdfs:range xsd:string .
+
+:anioPublicacion rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "año de publicación"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:gYear .
+
+:fechaPublicacion rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fecha de publicación"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:date .
+
+:idioma rdf:type owl:DatatypeProperty ;
+    rdfs:label "idioma"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:string .
+
+:numeroPaginas rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "número de páginas"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:positiveInteger .
+
+:edicion rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "edición"@es ;
+    rdfs:domain :RecursoBibliografico ;
+    rdfs:range xsd:positiveInteger .
+
+# --- Persona ---
+:nombre rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nombre"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string .
+
+:fechaNacimiento rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fecha de nacimiento"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:date .
+
+:nacionalidad rdf:type owl:DatatypeProperty ;
+    rdfs:label "nacionalidad"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string .
+
+:correoElectronico rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "correo electrónico"@es ;
+    rdfs:domain :Usuario ;
+    rdfs:range xsd:string .
+
+:matricula rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "matrícula"@es ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string .
+
+:numEmpleado rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "número de empleado"@es ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string .
+
+# --- Editorial ---
+:nombreEditorial rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nombre de editorial"@es ;
+    rdfs:domain :Editorial ;
+    rdfs:range xsd:string .
+
+:paisEditorial rdf:type owl:DatatypeProperty ;
+    rdfs:label "país de la editorial"@es ;
+    rdfs:domain :Editorial ;
+    rdfs:range xsd:string .
+
+# --- Copia Física ---
+:codigoBarras rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "código de barras"@es ;
+    rdfs:domain :CopiaFisica ;
+    rdfs:range xsd:string .
+
+:estado rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "estado"@es ;
+    rdfs:comment "Estado de la copia: disponible, prestado, en reparación, extraviado."@es ;
+    rdfs:domain :CopiaFisica ;
+    rdfs:range xsd:string .
+
+:estante rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "estante"@es ;
+    rdfs:domain :CopiaFisica ;
+    rdfs:range xsd:string .
+
+# --- Préstamo ---
+:fechaPrestamo rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fecha de préstamo"@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range xsd:date .
+
+:fechaDevolucion rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fecha de devolución"@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range xsd:date .
+
+:fechaLimite rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fecha límite"@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range xsd:date .
+
+:multa rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "multa"@es ;
+    rdfs:domain :Prestamo ;
+    rdfs:range xsd:decimal .
+
+# --- Categoría ---
+:nombreCategoria rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nombre de categoría"@es ;
+    rdfs:domain :Categoria ;
+    rdfs:range xsd:string .
+
+# --- Biblioteca ---
+:nombreBiblioteca rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nombre de biblioteca"@es ;
+    rdfs:domain :Biblioteca ;
+    rdfs:range xsd:string .
+
+:direccion rdf:type owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "dirección"@es ;
+    rdfs:domain :Biblioteca ;
+    rdfs:range xsd:string .
+
+# ============================================================
+# RESTRICCIONES DE CLASE (Class Restrictions)
+# ============================================================
+
+# Un Libro debe tener al menos 1 autor
+:Libro rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :escritoPor ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Un Libro debe tener exactamente 1 ISBN
+:Libro rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :isbn ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Un Libro debe estar publicado por exactamente 1 editorial
+:Libro rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :publicadoPor ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Un Préstamo involucra exactamente 1 copia y es realizado por exactamente 1 usuario
+:Prestamo rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :involucra ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+:Prestamo rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :realizadoPor ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Cada copia física pertenece a exactamente 1 recurso
+:CopiaFisica rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :esCopiade ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Cada copia debe estar en exactamente 1 biblioteca
+:CopiaFisica rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :ubicadaEn ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+# Un estudiante puede tener máximo 3 préstamos simultáneos
+:Estudiante rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :tienePrestamo ;
+    owl:maxCardinality "3"^^xsd:nonNegativeInteger
+] .
+
+# Un profesor puede tener máximo 5 préstamos simultáneos
+:Profesor rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :tienePrestamo ;
+    owl:maxCardinality "5"^^xsd:nonNegativeInteger
+] .
+
+# ============================================================
+# INSTANCIAS (Individuos - ABox)
+# ============================================================
+
+# --- Categorías ---
+:Ciencia rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Ciencia"^^xsd:string .
+
+:Computacion rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Computación"^^xsd:string ;
+    :tieneSubcategoria :InteligenciaArtificial .
+
+:InteligenciaArtificial rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Inteligencia Artificial"^^xsd:string .
+
+:Literatura rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Literatura"^^xsd:string .
+
+:Historia rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Historia"^^xsd:string .
+
+:Matematicas rdf:type owl:NamedIndividual , :Categoria ;
+    :nombreCategoria "Matemáticas"^^xsd:string .
+
+# --- Editoriales ---
+:Pearson rdf:type owl:NamedIndividual , :Editorial ;
+    :nombreEditorial "Pearson Education"^^xsd:string ;
+    :paisEditorial "Estados Unidos"^^xsd:string .
+
+:Springer rdf:type owl:NamedIndividual , :Editorial ;
+    :nombreEditorial "Springer"^^xsd:string ;
+    :paisEditorial "Alemania"^^xsd:string .
+
+:OReilly rdf:type owl:NamedIndividual , :Editorial ;
+    :nombreEditorial "O'Reilly Media"^^xsd:string ;
+    :paisEditorial "Estados Unidos"^^xsd:string .
+
+:FCE rdf:type owl:NamedIndividual , :Editorial ;
+    :nombreEditorial "Fondo de Cultura Económica"^^xsd:string ;
+    :paisEditorial "México"^^xsd:string .
+
+# --- Autores ---
+:StuartRussell rdf:type owl:NamedIndividual , :Autor ;
+    :nombre "Stuart Russell"^^xsd:string ;
+    :nacionalidad "Reino Unido"^^xsd:string .
+
+:PeterNorvig rdf:type owl:NamedIndividual , :Autor ;
+    :nombre "Peter Norvig"^^xsd:string ;
+    :nacionalidad "Estados Unidos"^^xsd:string .
+
+:ThomasCormen rdf:type owl:NamedIndividual , :Autor ;
+    :nombre "Thomas H. Cormen"^^xsd:string ;
+    :nacionalidad "Estados Unidos"^^xsd:string .
+
+:GabrielGarciaMarquez rdf:type owl:NamedIndividual , :Autor ;
+    :nombre "Gabriel García Márquez"^^xsd:string ;
+    :nacionalidad "Colombia"^^xsd:string ;
+    :fechaNacimiento "1927-03-06"^^xsd:date .
+
+:OctavioPaz rdf:type owl:NamedIndividual , :Autor ;
+    :nombre "Octavio Paz"^^xsd:string ;
+    :nacionalidad "México"^^xsd:string ;
+    :fechaNacimiento "1914-03-31"^^xsd:date .
+
+# --- Editores ---
+:EditorJohnSmith rdf:type owl:NamedIndividual , :Editor ;
+    :nombre "John Smith"^^xsd:string .
+
+# --- Libros ---
+:AIMA rdf:type owl:NamedIndividual , :Libro ;
+    :titulo "Artificial Intelligence: A Modern Approach"^^xsd:string ;
+    :isbn "978-0134610993"^^xsd:string ;
+    :anioPublicacion "2020"^^xsd:gYear ;
+    :numeroPaginas "1115"^^xsd:positiveInteger ;
+    :edicion "4"^^xsd:positiveInteger ;
+    :idioma "Inglés"^^xsd:string ;
+    :escritoPor :StuartRussell , :PeterNorvig ;
+    :publicadoPor :Pearson ;
+    :editadoPor :EditorJohnSmith ;
+    :perteneceACategoria :InteligenciaArtificial , :Computacion .
+
+:IntroAlgoritmos rdf:type owl:NamedIndividual , :Libro ;
+    :titulo "Introduction to Algorithms"^^xsd:string ;
+    :isbn "978-0262046305"^^xsd:string ;
+    :anioPublicacion "2022"^^xsd:gYear ;
+    :numeroPaginas "1312"^^xsd:positiveInteger ;
+    :edicion "4"^^xsd:positiveInteger ;
+    :idioma "Inglés"^^xsd:string ;
+    :escritoPor :ThomasCormen ;
+    :publicadoPor :Springer ;
+    :perteneceACategoria :Computacion , :Matematicas .
+
+:CienAnios rdf:type owl:NamedIndividual , :Libro ;
+    :titulo "Cien años de soledad"^^xsd:string ;
+    :isbn "978-0307474728"^^xsd:string ;
+    :anioPublicacion "1967"^^xsd:gYear ;
+    :numeroPaginas "471"^^xsd:positiveInteger ;
+    :edicion "1"^^xsd:positiveInteger ;
+    :idioma "Español"^^xsd:string ;
+    :escritoPor :GabrielGarciaMarquez ;
+    :publicadoPor :FCE ;
+    :perteneceACategoria :Literatura .
+
+:LaberintoSoledad rdf:type owl:NamedIndividual , :Libro ;
+    :titulo "El laberinto de la soledad"^^xsd:string ;
+    :isbn "978-0802150424"^^xsd:string ;
+    :anioPublicacion "1950"^^xsd:gYear ;
+    :numeroPaginas "310"^^xsd:positiveInteger ;
+    :edicion "1"^^xsd:positiveInteger ;
+    :idioma "Español"^^xsd:string ;
+    :escritoPor :OctavioPaz ;
+    :publicadoPor :FCE ;
+    :perteneceACategoria :Literatura , :Historia .
+
+# --- Biblioteca ---
+:BibliotecaCentralUAG rdf:type owl:NamedIndividual , :Biblioteca ;
+    :nombreBiblioteca "Biblioteca Central UAG"^^xsd:string ;
+    :direccion "Av. Patria 1201, Lomas del Valle, Zapopan, Jalisco, México"^^xsd:string .
+
+# --- Copias Físicas ---
+:CopiaAIMA_01 rdf:type owl:NamedIndividual , :CopiaFisica ;
+    :codigoBarras "BC-AIMA-001"^^xsd:string ;
+    :estado "disponible"^^xsd:string ;
+    :estante "E3-A12"^^xsd:string ;
+    :esCopiade :AIMA ;
+    :ubicadaEn :BibliotecaCentralUAG .
+
+:CopiaAIMA_02 rdf:type owl:NamedIndividual , :CopiaFisica ;
+    :codigoBarras "BC-AIMA-002"^^xsd:string ;
+    :estado "prestado"^^xsd:string ;
+    :estante "E3-A12"^^xsd:string ;
+    :esCopiade :AIMA ;
+    :ubicadaEn :BibliotecaCentralUAG .
+
+:CopiaCienAnios_01 rdf:type owl:NamedIndividual , :CopiaFisica ;
+    :codigoBarras "BC-CAS-001"^^xsd:string ;
+    :estado "disponible"^^xsd:string ;
+    :estante "E1-B05"^^xsd:string ;
+    :esCopiade :CienAnios ;
+    :ubicadaEn :BibliotecaCentralUAG .
+
+:CopiaAlgoritmos_01 rdf:type owl:NamedIndividual , :CopiaFisica ;
+    :codigoBarras "BC-ALG-001"^^xsd:string ;
+    :estado "disponible"^^xsd:string ;
+    :estante "E3-A15"^^xsd:string ;
+    :esCopiade :IntroAlgoritmos ;
+    :ubicadaEn :BibliotecaCentralUAG .
+
+:CopiaLaberinto_01 rdf:type owl:NamedIndividual , :CopiaFisica ;
+    :codigoBarras "BC-LAB-001"^^xsd:string ;
+    :estado "prestado"^^xsd:string ;
+    :estante "E1-B08"^^xsd:string ;
+    :esCopiade :LaberintoSoledad ;
+    :ubicadaEn :BibliotecaCentralUAG .
+
+# --- Usuarios ---
+:MariaLopez rdf:type owl:NamedIndividual , :Estudiante ;
+    :nombre "María López García"^^xsd:string ;
+    :correoElectronico "maria.lopez@uag.mx"^^xsd:string ;
+    :matricula "MAT-2024-0512"^^xsd:string .
+
+:CarlosRamirez rdf:type owl:NamedIndividual , :Estudiante ;
+    :nombre "Carlos Ramírez Soto"^^xsd:string ;
+    :correoElectronico "carlos.ramirez@uag.mx"^^xsd:string ;
+    :matricula "MAT-2023-0198"^^xsd:string .
+
+:DraSilvia rdf:type owl:NamedIndividual , :Profesor ;
+    :nombre "Dra. Silvia Hernández Torres"^^xsd:string ;
+    :correoElectronico "silvia.hernandez@uag.mx"^^xsd:string ;
+    :numEmpleado "EMP-1087"^^xsd:string .
+
+# --- Préstamos ---
+:Prestamo001 rdf:type owl:NamedIndividual , :Prestamo ;
+    :realizadoPor :MariaLopez ;
+    :involucra :CopiaAIMA_02 ;
+    :fechaPrestamo "2026-03-15"^^xsd:date ;
+    :fechaLimite "2026-04-15"^^xsd:date .
+
+:Prestamo002 rdf:type owl:NamedIndividual , :Prestamo ;
+    :realizadoPor :DraSilvia ;
+    :involucra :CopiaLaberinto_01 ;
+    :fechaPrestamo "2026-03-20"^^xsd:date ;
+    :fechaLimite "2026-05-20"^^xsd:date .
+
+# Vincular préstamos a usuarios
+:MariaLopez :tienePrestamo :Prestamo001 .
+:DraSilvia :tienePrestamo :Prestamo002 .
+
+# Vincular copias a recursos (inversa)
+:AIMA :tieneCopia :CopiaAIMA_01 , :CopiaAIMA_02 .
+:CienAnios :tieneCopia :CopiaCienAnios_01 .
+:IntroAlgoritmos :tieneCopia :CopiaAlgoritmos_01 .
+:LaberintoSoledad :tieneCopia :CopiaLaberinto_01 .
