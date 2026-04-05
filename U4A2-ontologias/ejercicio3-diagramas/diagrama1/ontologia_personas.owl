@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.uag.mx/ontologias/personas#"
+     xml:base="http://www.uag.mx/ontologias/personas"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <!-- ========================== -->
+    <!-- Declaración de la Ontología -->
+    <!-- ========================== -->
+    <owl:Ontology rdf:about="http://www.uag.mx/ontologias/personas">
+        <rdfs:label xml:lang="es">Ontología de Personas</rdfs:label>
+        <rdfs:comment xml:lang="es">Ontología basada en el diagrama de clases: Mamíferos, Personas, PersonasFemeninas, PersonasMasculinas, con individuos Mary y John.</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- ========================== -->
+    <!-- Clases                      -->
+    <!-- ========================== -->
+
+    <!-- Clase raíz: Mamiferos -->
+    <owl:Class rdf:about="#Mamiferos">
+        <rdfs:label xml:lang="es">Mamíferos</rdfs:label>
+    </owl:Class>
+
+    <!-- Personas es subconjunto (subclase) de Mamiferos -->
+    <owl:Class rdf:about="#Personas">
+        <rdfs:subClassOf rdf:resource="#Mamiferos"/>
+        <!-- Restricción: TienePiernas exactamente 2 -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#TienePiernas"/>
+                <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="es">Personas</rdfs:label>
+    </owl:Class>
+
+    <!-- PersonasFemeninas es subconjunto de Personas -->
+    <owl:Class rdf:about="#PersonasFemeninas">
+        <rdfs:subClassOf rdf:resource="#Personas"/>
+        <rdfs:label xml:lang="es">Personas Femeninas</rdfs:label>
+    </owl:Class>
+
+    <!-- PersonasMasculinas es subconjunto de Personas -->
+    <owl:Class rdf:about="#PersonasMasculinas">
+        <rdfs:subClassOf rdf:resource="#Personas"/>
+        <rdfs:label xml:lang="es">Personas Masculinas</rdfs:label>
+    </owl:Class>
+
+    <!-- ========================== -->
+    <!-- Object Properties           -->
+    <!-- ========================== -->
+
+    <!-- TieneMadre: propiedad funcional (línea punteada en el diagrama) -->
+    <owl:ObjectProperty rdf:about="#TieneMadre">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Personas"/>
+        <rdfs:range rdf:resource="#PersonasFemeninas"/>
+        <rdfs:label xml:lang="es">Tiene Madre</rdfs:label>
+        <rdfs:comment xml:lang="es">Cada persona tiene exactamente una madre (propiedad funcional).</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <!-- HermanaDe -->
+    <owl:ObjectProperty rdf:about="#HermanaDe">
+        <rdfs:domain rdf:resource="#PersonasFemeninas"/>
+        <rdfs:range rdf:resource="#Personas"/>
+        <rdfs:label xml:lang="es">Hermana De</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- TieneHermana (inversa de HermanaDe) -->
+    <owl:ObjectProperty rdf:about="#TieneHermana">
+        <owl:inverseOf rdf:resource="#HermanaDe"/>
+        <rdfs:domain rdf:resource="#Personas"/>
+        <rdfs:range rdf:resource="#PersonasFemeninas"/>
+        <rdfs:label xml:lang="es">Tiene Hermana</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- ========================== -->
+    <!-- Datatype Properties         -->
+    <!-- ========================== -->
+
+    <!-- TienePiernas -->
+    <owl:DatatypeProperty rdf:about="#TienePiernas">
+        <rdfs:domain rdf:resource="#Personas"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label xml:lang="es">Tiene Piernas</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <!-- ========================== -->
+    <!-- Individuos (Instancias)     -->
+    <!-- ========================== -->
+
+    <!-- Mary: miembro de PersonasFemeninas -->
+    <owl:NamedIndividual rdf:about="#Mary">
+        <rdf:type rdf:resource="#PersonasFemeninas"/>
+        <HermanaDe rdf:resource="#John"/>
+        <TienePiernas rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</TienePiernas>
+        <rdfs:label xml:lang="es">Mary</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- John: miembro de PersonasMasculinas -->
+    <owl:NamedIndividual rdf:about="#John">
+        <rdf:type rdf:resource="#PersonasMasculinas"/>
+        <TieneHermana rdf:resource="#Mary"/>
+        <TienePiernas rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</TienePiernas>
+        <rdfs:label xml:lang="es">John</rdfs:label>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

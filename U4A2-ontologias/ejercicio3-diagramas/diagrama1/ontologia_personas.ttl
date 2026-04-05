@@ -1,0 +1,84 @@
+@prefix : <http://www.uag.mx/ontologias/personas#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ==============================
+# Declaración de la Ontología
+# ==============================
+
+<http://www.uag.mx/ontologias/personas> rdf:type owl:Ontology ;
+    rdfs:label "Ontología de Personas"@es ;
+    rdfs:comment "Ontología basada en el diagrama de clases: Mamíferos, Personas, PersonasFemeninas, PersonasMasculinas, con individuos Mary y John."@es .
+
+# ==============================
+# Clases
+# ==============================
+
+:Mamiferos rdf:type owl:Class ;
+    rdfs:label "Mamíferos"@es .
+
+:Personas rdf:type owl:Class ;
+    rdfs:subClassOf :Mamiferos ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :TienePiernas ;
+        owl:hasValue "2"^^xsd:integer
+    ] ;
+    rdfs:label "Personas"@es .
+
+:PersonasFemeninas rdf:type owl:Class ;
+    rdfs:subClassOf :Personas ;
+    rdfs:label "Personas Femeninas"@es .
+
+:PersonasMasculinas rdf:type owl:Class ;
+    rdfs:subClassOf :Personas ;
+    rdfs:label "Personas Masculinas"@es .
+
+# ==============================
+# Object Properties
+# ==============================
+
+:TieneMadre rdf:type owl:ObjectProperty ,
+                     owl:FunctionalProperty ;
+    rdfs:domain :Personas ;
+    rdfs:range :PersonasFemeninas ;
+    rdfs:label "Tiene Madre"@es ;
+    rdfs:comment "Cada persona tiene exactamente una madre (propiedad funcional)."@es .
+
+:HermanaDe rdf:type owl:ObjectProperty ;
+    rdfs:domain :PersonasFemeninas ;
+    rdfs:range :Personas ;
+    rdfs:label "Hermana De"@es .
+
+:TieneHermana rdf:type owl:ObjectProperty ;
+    owl:inverseOf :HermanaDe ;
+    rdfs:domain :Personas ;
+    rdfs:range :PersonasFemeninas ;
+    rdfs:label "Tiene Hermana"@es .
+
+# ==============================
+# Datatype Properties
+# ==============================
+
+:TienePiernas rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Personas ;
+    rdfs:range xsd:integer ;
+    rdfs:label "Tiene Piernas"@es .
+
+# ==============================
+# Individuos (Instancias)
+# ==============================
+
+:Mary rdf:type owl:NamedIndividual ,
+               :PersonasFemeninas ;
+    :HermanaDe :John ;
+    :TienePiernas "2"^^xsd:integer ;
+    rdfs:label "Mary"@es .
+
+:John rdf:type owl:NamedIndividual ,
+               :PersonasMasculinas ;
+    :TieneHermana :Mary ;
+    :TienePiernas "2"^^xsd:integer ;
+    rdfs:label "John"@es .
