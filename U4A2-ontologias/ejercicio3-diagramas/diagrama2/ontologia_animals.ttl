@@ -1,0 +1,92 @@
+@prefix : <http://www.uag.mx/ontologias/animals#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ======================================
+# Declaración de la Ontología
+# ======================================
+
+<http://www.uag.mx/ontologias/animals> rdf:type owl:Ontology ;
+    rdfs:label "Ontología de Animales y Mascotas"@es ;
+    rdfs:comment "Ontología con jerarquía Animal-Mammal-Dog, propiedades owns/hasPet/petOf, e individuos Robbie, Zeus y MrBurns."@es .
+
+# ======================================
+# TBox: Clases
+# ======================================
+
+:Animal rdf:type owl:Class ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :eyes ;
+        owl:hasValue "2"^^xsd:integer
+    ] ;
+    rdfs:label "Animal"@en .
+
+:Mammal rdf:type owl:Class ;
+    rdfs:subClassOf :Animal ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :legs ;
+        owl:hasValue "4"^^xsd:integer
+    ] ;
+    rdfs:label "Mammal"@en .
+
+:Dog rdf:type owl:Class ;
+    rdfs:subClassOf :Mammal ;
+    rdfs:label "Dog"@en .
+
+:Human rdf:type owl:Class ;
+    rdfs:label "Human"@en .
+
+# ======================================
+# TBox: Object Properties
+# ======================================
+
+:owns rdf:type owl:ObjectProperty ;
+    rdfs:domain :Human ;
+    rdfs:label "owns"@en .
+
+:hasPet rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :owns ;
+    rdfs:range :Mammal ;
+    rdfs:label "hasPet"@en .
+
+:petOf rdf:type owl:ObjectProperty ;
+    owl:inverseOf :hasPet ;
+    rdfs:label "petOf"@en .
+
+# ======================================
+# TBox: Datatype Properties
+# ======================================
+
+:eyes rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Animal ;
+    rdfs:range xsd:integer ;
+    rdfs:label "eyes"@en .
+
+:legs rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Animal ;
+    rdfs:range xsd:integer ;
+    rdfs:label "legs"@en .
+
+# ======================================
+# ABox: Individuos
+# ======================================
+
+:Robbie rdf:type owl:NamedIndividual ,
+                 :Dog ;
+    :petOf :Zeus ;
+    rdfs:label "Robbie"@en .
+
+:Zeus rdf:type owl:NamedIndividual ,
+               :Human ;
+    :owns :Robbie ;
+    owl:sameAs :MrBurns ;
+    rdfs:label "Zeus"@en .
+
+:MrBurns rdf:type owl:NamedIndividual ,
+                  :Human ;
+    owl:sameAs :Zeus ;
+    rdfs:label "MrBurns"@en .
