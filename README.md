@@ -103,7 +103,7 @@ Ontología que modela el sistema de gestión de una biblioteca universitaria.
 
 ### ejercicio3-diagramas
 
-Ejercicio de resolución de ontologías a partir de diagramas TBox/ABox dados. Se desarrollaron dos ontologías independientes.
+Ejercicio de resolución de ontologías a partir de diagramas TBox/ABox dados. Se desarrollaron tres ontologías independientes.
 
 #### diagrama1 — Ontología de Personas
 
@@ -140,7 +140,46 @@ Ontología basada en un diagrama de clases con jerarquía de mamíferos y person
 | [ontologia1.png](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia1.png) | Diagrama de la ontología (PNG) |
 | [ontologia1.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia1.svg) | Diagrama de la ontología (SVG) |
 
-#### diagrama2 — Ontología de Animales y Mascotas
+#### diagrama2 — Ontología de Fred
+
+Ontología basada en una red semántica con jerarquía de animales, relaciones de alimentación y mascota, con individuos Fred, Tibbs y cat_liker.
+
+**Namespace:** `http://www.uag.mx/ontologias/fred#`
+
+**Clases:**
+
+| Clase | Descripción |
+|-------|-------------|
+| `animal` | Clase raíz de la jerarquía |
+| `cat` | Subclase de animal |
+| `person` | Subclase de animal |
+| `vegetarian` | Subclase de animal; restricción: `eats` solo valores que no sean `animal` (`allValuesFrom complementOf animal`) |
+| `cow` | Subclase de vegetarian |
+| `sheep` | Subclase de animal; restricción: `eats` solo `grass` (`allValuesFrom {grass}`) |
+| `man` | Subclase de person, adult y male |
+| `adult` | Clase auxiliar |
+| `male` | Clase auxiliar |
+
+**Propiedades:**
+
+| Propiedad | Tipo | Descripción |
+|-----------|------|-------------|
+| `has_pet` | ObjectProperty | Dominio: person → rango: animal |
+| `likes` | ObjectProperty | Relación de agrado entre individuos o clases |
+| `eats` | ObjectProperty | Dominio: animal; lo que un animal come |
+
+**Instancias:** grass (individuo genérico), Tibbs (cat), cat_liker (person y vegetarian, `likes` cat), Fred (man y cow, `has_pet` Tibbs).
+
+**Archivos:**
+
+| Archivo | Descripción |
+|---------|-------------|
+| [ontologia_fred.owl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_fred.owl) | Ontología en formato RDF/XML |
+| [ontologia_fred.ttl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_fred.ttl) | Ontología en formato Turtle |
+| [ontologia2.png](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.png) | Diagrama de la ontología (PNG) |
+| [ontologia2.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.svg) | Diagrama de la ontología (SVG) |
+
+#### diagrama3 — Ontología de Animales y Mascotas
 
 Ontología con jerarquía Animal–Mammal–Dog y relaciones de propiedad entre humanos y mascotas, con individuos Robbie, Zeus y MrBurns.
 
@@ -171,7 +210,7 @@ Ontología con jerarquía Animal–Mammal–Dog y relaciones de propiedad entre 
 
 | Archivo | Descripción |
 |---------|-------------|
-| [ontologia_animals.owl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_animals.owl) | Ontología en formato RDF/XML |
-| [ontologia_animals.ttl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_animals.ttl) | Ontología en formato Turtle |
-| [ontologia2.png](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.png) | Diagrama de la ontología (PNG) |
-| [ontologia2.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.svg) | Diagrama de la ontología (SVG) |
+| [ontologia_animals.owl](U4A2-ontologias/ejercicio3-diagramas/diagrama3/ontologia_animals.owl) | Ontología en formato RDF/XML |
+| [ontologia_animals.ttl](U4A2-ontologias/ejercicio3-diagramas/diagrama3/ontologia_animals.ttl) | Ontología en formato Turtle |
+| [ontologia3.png](U4A2-ontologias/ejercicio3-diagramas/diagrama3/ontologia3.png) | Diagrama de la ontología (PNG) |
+| [ontologia3.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama3/ontologia3.svg) | Diagrama de la ontología (SVG) |

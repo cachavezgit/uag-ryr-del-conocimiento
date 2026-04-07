@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.uag.mx/ontologias/fred#"
+     xml:base="http://www.uag.mx/ontologias/fred"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <!-- ======================================== -->
+    <!-- Declaración de la Ontología               -->
+    <!-- ======================================== -->
+    <owl:Ontology rdf:about="http://www.uag.mx/ontologias/fred">
+        <rdfs:label xml:lang="es">Ontología de Fred</rdfs:label>
+        <rdfs:comment xml:lang="es">Ontología basada en el diagrama de red semántica con Fred, sus mascotas, y la jerarquía de clases animal, person, vegetarian, etc.</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- ======================================== -->
+    <!-- Clases                                    -->
+    <!-- ======================================== -->
+
+    <!-- animal: clase raíz -->
+    <owl:Class rdf:about="#animal">
+        <rdfs:label xml:lang="en">animal</rdfs:label>
+    </owl:Class>
+
+    <!-- cat is an animal -->
+    <owl:Class rdf:about="#cat">
+        <rdfs:subClassOf rdf:resource="#animal"/>
+        <rdfs:label xml:lang="en">cat</rdfs:label>
+    </owl:Class>
+
+    <!-- person is an animal -->
+    <owl:Class rdf:about="#person">
+        <rdfs:subClassOf rdf:resource="#animal"/>
+        <rdfs:label xml:lang="en">person</rdfs:label>
+    </owl:Class>
+
+    <!-- vegetarian is an animal que no come animales -->
+    <owl:Class rdf:about="#vegetarian">
+        <rdfs:subClassOf rdf:resource="#animal"/>
+        <!-- Restricción: doesn't eat animal -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#eats"/>
+                <owl:allValuesFrom>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="#animal"/>
+                    </owl:Class>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="en">vegetarian</rdfs:label>
+        <rdfs:comment xml:lang="es">Un vegetariano es un animal que no come otros animales (owl:allValuesFrom complementOf animal).</rdfs:comment>
+    </owl:Class>
+
+    <!-- cow is a vegetarian -->
+    <owl:Class rdf:about="#cow">
+        <rdfs:subClassOf rdf:resource="#vegetarian"/>
+        <rdfs:label xml:lang="en">cow</rdfs:label>
+    </owl:Class>
+
+    <!-- sheep is an animal que come solamente grass -->
+    <owl:Class rdf:about="#sheep">
+        <rdfs:subClassOf rdf:resource="#animal"/>
+        <!-- Restricción: eats only grass -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#eats"/>
+                <owl:allValuesFrom>
+                    <owl:Class>
+                        <owl:oneOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#grass"/>
+                        </owl:oneOf>
+                    </owl:Class>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label xml:lang="en">sheep</rdfs:label>
+        <rdfs:comment xml:lang="es">Un sheep es un animal que come solamente grass.</rdfs:comment>
+    </owl:Class>
+
+    <!-- man is a person, is an adult, is a male -->
+    <owl:Class rdf:about="#man">
+        <rdfs:subClassOf rdf:resource="#person"/>
+        <rdfs:subClassOf rdf:resource="#adult"/>
+        <rdfs:subClassOf rdf:resource="#male"/>
+        <rdfs:label xml:lang="en">man</rdfs:label>
+    </owl:Class>
+
+    <!-- adult -->
+    <owl:Class rdf:about="#adult">
+        <rdfs:label xml:lang="en">adult</rdfs:label>
+    </owl:Class>
+
+    <!-- male -->
+    <owl:Class rdf:about="#male">
+        <rdfs:label xml:lang="en">male</rdfs:label>
+    </owl:Class>
+
+    <!-- ======================================== -->
+    <!-- Object Properties                         -->
+    <!-- ======================================== -->
+
+    <!-- has_pet -->
+    <owl:ObjectProperty rdf:about="#has_pet">
+        <rdfs:domain rdf:resource="#person"/>
+        <rdfs:range rdf:resource="#animal"/>
+        <rdfs:label xml:lang="en">has pet</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- likes -->
+    <owl:ObjectProperty rdf:about="#likes">
+        <rdfs:label xml:lang="en">likes</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- eats -->
+    <owl:ObjectProperty rdf:about="#eats">
+        <rdfs:domain rdf:resource="#animal"/>
+        <rdfs:label xml:lang="en">eats</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- ======================================== -->
+    <!-- Individuos (Instancias)                   -->
+    <!-- ======================================== -->
+
+    <!-- grass: individuo (lo que comen las ovejas) -->
+    <owl:NamedIndividual rdf:about="#grass">
+        <rdfs:label xml:lang="en">grass</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- Tibbs: is a cat -->
+    <owl:NamedIndividual rdf:about="#Tibbs">
+        <rdf:type rdf:resource="#cat"/>
+        <rdfs:label xml:lang="en">Tibbs</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- cat_liker: is a person, is a vegetarian; likes cat -->
+    <owl:NamedIndividual rdf:about="#cat_liker">
+        <rdf:type rdf:resource="#person"/>
+        <rdf:type rdf:resource="#vegetarian"/>
+        <likes rdf:resource="#cat"/>
+        <rdfs:label xml:lang="en">cat_liker</rdfs:label>
+        <rdfs:comment xml:lang="es">Individuo que es persona y vegetariano, y que le gustan los gatos.</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Fred: is a man, is a cow (?), has_pet Tibbs -->
+    <!-- El diagrama muestra Fred -> is a -> cow y Fred -> is a -> man -->
+    <owl:NamedIndividual rdf:about="#Fred">
+        <rdf:type rdf:resource="#man"/>
+        <rdf:type rdf:resource="#cow"/>
+        <has_pet rdf:resource="#Tibbs"/>
+        <rdfs:label xml:lang="en">Fred</rdfs:label>
+        <rdfs:comment xml:lang="es">Fred es instancia de man y cow según el diagrama. Tiene a Tibbs como mascota.</rdfs:comment>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

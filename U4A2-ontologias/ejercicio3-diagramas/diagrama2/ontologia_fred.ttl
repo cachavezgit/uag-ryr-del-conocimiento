@@ -1,0 +1,117 @@
+@prefix : <http://www.uag.mx/ontologias/fred#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ======================================
+# Declaración de la Ontología
+# ======================================
+
+<http://www.uag.mx/ontologias/fred> rdf:type owl:Ontology ;
+    rdfs:label "Ontología de Fred"@es ;
+    rdfs:comment "Ontología basada en el diagrama de red semántica con Fred, sus mascotas, y la jerarquía de clases."@es .
+
+# ======================================
+# Clases
+# ======================================
+
+:animal rdf:type owl:Class ;
+    rdfs:label "animal"@en .
+
+:cat rdf:type owl:Class ;
+    rdfs:subClassOf :animal ;
+    rdfs:label "cat"@en .
+
+:person rdf:type owl:Class ;
+    rdfs:subClassOf :animal ;
+    rdfs:label "person"@en .
+
+# vegetarian: animal que no come animales (doesn't eat animal)
+:vegetarian rdf:type owl:Class ;
+    rdfs:subClassOf :animal ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :eats ;
+        owl:allValuesFrom [
+            rdf:type owl:Class ;
+            owl:complementOf :animal
+        ]
+    ] ;
+    rdfs:label "vegetarian"@en ;
+    rdfs:comment "Un vegetariano es un animal que no come otros animales."@es .
+
+# cow is a vegetarian
+:cow rdf:type owl:Class ;
+    rdfs:subClassOf :vegetarian ;
+    rdfs:label "cow"@en .
+
+# sheep is an animal; eats only grass
+:sheep rdf:type owl:Class ;
+    rdfs:subClassOf :animal ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :eats ;
+        owl:allValuesFrom [
+            rdf:type owl:Class ;
+            owl:oneOf ( :grass )
+        ]
+    ] ;
+    rdfs:label "sheep"@en ;
+    rdfs:comment "Un sheep es un animal que come solamente grass."@es .
+
+# man is a person, is an adult, is a male
+:man rdf:type owl:Class ;
+    rdfs:subClassOf :person ,
+                    :adult ,
+                    :male ;
+    rdfs:label "man"@en .
+
+:adult rdf:type owl:Class ;
+    rdfs:label "adult"@en .
+
+:male rdf:type owl:Class ;
+    rdfs:label "male"@en .
+
+# ======================================
+# Object Properties
+# ======================================
+
+:has_pet rdf:type owl:ObjectProperty ;
+    rdfs:domain :person ;
+    rdfs:range :animal ;
+    rdfs:label "has pet"@en .
+
+:likes rdf:type owl:ObjectProperty ;
+    rdfs:label "likes"@en .
+
+:eats rdf:type owl:ObjectProperty ;
+    rdfs:domain :animal ;
+    rdfs:label "eats"@en .
+
+# ======================================
+# Individuos
+# ======================================
+
+:grass rdf:type owl:NamedIndividual ;
+    rdfs:label "grass"@en .
+
+:Tibbs rdf:type owl:NamedIndividual ,
+                :cat ;
+    rdfs:label "Tibbs"@en .
+
+# cat_liker: is a person, is a vegetarian; likes cat (la clase)
+:cat_liker rdf:type owl:NamedIndividual ,
+                    :person ,
+                    :vegetarian ;
+    :likes :cat ;
+    rdfs:label "cat_liker"@en ;
+    rdfs:comment "Individuo que es persona y vegetariano, y le gustan los gatos."@es .
+
+# Fred: is a man, is a cow; has_pet Tibbs
+:Fred rdf:type owl:NamedIndividual ,
+               :man ,
+               :cow ;
+    :has_pet :Tibbs ;
+    rdfs:label "Fred"@en ;
+    rdfs:comment "Fred es instancia de man y cow según el diagrama."@es .
