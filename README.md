@@ -98,3 +98,80 @@ Ontología que modela el sistema de gestión de una biblioteca universitaria.
 | [biblioteca.owl](U4A2-ontologias/ejercicio2-biblioteca/biblioteca.owl) | Ontología en formato RDF/XML |
 | [ontologia_biblioteca.png](U4A2-ontologias/ejercicio2-biblioteca/ontologia_biblioteca.png) | Diagrama de la ontología (PNG) |
 | [ontologia_biblioteca.svg](U4A2-ontologias/ejercicio2-biblioteca/ontologia_biblioteca.svg) | Diagrama de la ontología (SVG) |
+
+---
+
+### ejercicio3-diagramas
+
+Ejercicio de resolución de ontologías a partir de diagramas TBox/ABox dados. Se desarrollaron dos ontologías independientes.
+
+#### diagrama1 — Ontología de Personas
+
+Ontología basada en un diagrama de clases con jerarquía de mamíferos y personas, con individuos Mary y John.
+
+**Namespace:** `http://www.uag.mx/ontologias/personas#`
+
+**Clases:**
+
+| Clase | Descripción |
+|-------|-------------|
+| `Mamiferos` | Clase raíz de la jerarquía |
+| `Personas` | Subclase de Mamíferos; restricción: `TienePiernas = 2` |
+| `PersonasFemeninas` | Subclase de Personas |
+| `PersonasMasculinas` | Subclase de Personas |
+
+**Propiedades:**
+
+| Propiedad | Tipo | Descripción |
+|-----------|------|-------------|
+| `TieneMadre` | ObjectProperty (funcional) | Dominio: Personas → rango: PersonasFemeninas |
+| `HermanaDe` | ObjectProperty | Dominio: PersonasFemeninas → rango: Personas |
+| `TieneHermana` | ObjectProperty | Inversa de `HermanaDe` |
+| `TienePiernas` | DatatypeProperty (xsd:integer) | Número de piernas de una persona |
+
+**Instancias:** Mary (PersonasFemeninas, `HermanaDe` John), John (PersonasMasculinas, `TieneHermana` Mary). Ambos con `TienePiernas = 2`.
+
+**Archivos:**
+
+| Archivo | Descripción |
+|---------|-------------|
+| [ontologia_personas.owl](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia_personas.owl) | Ontología en formato RDF/XML |
+| [ontologia_personas.ttl](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia_personas.ttl) | Ontología en formato Turtle |
+| [ontologia1.png](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia1.png) | Diagrama de la ontología (PNG) |
+| [ontologia1.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama1/ontologia1.svg) | Diagrama de la ontología (SVG) |
+
+#### diagrama2 — Ontología de Animales y Mascotas
+
+Ontología con jerarquía Animal–Mammal–Dog y relaciones de propiedad entre humanos y mascotas, con individuos Robbie, Zeus y MrBurns.
+
+**Namespace:** `http://www.uag.mx/ontologias/animals#`
+
+**Clases (TBox):**
+
+| Clase | Descripción |
+|-------|-------------|
+| `Animal` | Clase raíz; restricción: `eyes = 2` |
+| `Mammal` | Subclase de Animal; restricción: `legs = 4` |
+| `Dog` | Subclase de Mammal |
+| `Human` | Clase independiente para humanos |
+
+**Propiedades (TBox):**
+
+| Propiedad | Tipo | Descripción |
+|-----------|------|-------------|
+| `owns` | ObjectProperty | Dominio: Human |
+| `hasPet` | ObjectProperty | Subpropiedad de `owns`; rango: Mammal |
+| `petOf` | ObjectProperty | Inversa de `hasPet` |
+| `eyes` | DatatypeProperty (xsd:integer) | Número de ojos de un animal |
+| `legs` | DatatypeProperty (xsd:integer) | Número de patas de un animal |
+
+**Instancias (ABox):** Robbie (Dog, `petOf` Zeus), Zeus (Human, `owns` Robbie, `sameAs` MrBurns), MrBurns (Human, `sameAs` Zeus).
+
+**Archivos:**
+
+| Archivo | Descripción |
+|---------|-------------|
+| [ontologia_animals.owl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_animals.owl) | Ontología en formato RDF/XML |
+| [ontologia_animals.ttl](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia_animals.ttl) | Ontología en formato Turtle |
+| [ontologia2.png](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.png) | Diagrama de la ontología (PNG) |
+| [ontologia2.svg](U4A2-ontologias/ejercicio3-diagramas/diagrama2/ontologia2.svg) | Diagrama de la ontología (SVG) |
